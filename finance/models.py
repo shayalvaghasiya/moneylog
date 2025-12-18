@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 
+
+# Account
+
 # pre-defined account types 
 class AccountType(models.TextChoices):
     BANK = "bank", "Bank"
@@ -8,8 +11,6 @@ class AccountType(models.TextChoices):
     CREDIT_CARD = "credit card", "Credit Card"
     WALLET = "wallet", "Wallet"
 
-
-# Account
 class Account(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="accounts")
     name = models.CharField(max_length=100)
@@ -24,3 +25,23 @@ class Account(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.account_type})"
+
+
+# Category 
+
+class CategoryType(models.TextChoices):
+    INCOME = "income", "Income"
+    EXPENSE = "expense", "Expense"
+
+class Category(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="categories")
+    name = models.CharField(max_length=100)
+    category_type = models.CharField(max_length=10, choices=CategoryType.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "name", "category_type"], name="unique_category_name_per_user_type")]
+
+    def __str__(self):
+        return f"{self.name} ({self.category_type})"
