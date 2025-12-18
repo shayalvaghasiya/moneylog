@@ -77,5 +77,36 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.transaction_type} - {self.amount}"
     
+
+# Budget
+
+class BudgetPeriod(models.TextChoices):
+    MONTHLY = "monthly", "Monthly"
+
+class Budget(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="budgets")
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="budgets")
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    period = models.CharField(max_length=10, choices=BudgetPeriod.choices, default=BudgetPeriod.MONTHLY)
+    start_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    def clean(self):
+        if self.amount <=0:
+            raise ValueError("Budget amount must be positive")
+        
+        if self.category.category_type != CategoryType.EXPENSE:
+            raise ValueError("Budget can only be set for expense categories")
+        
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "category", "period", "start_date"], name="unique_budget_per_user_category_period_start_date")]
+
+    def __str__(self):
+        return f"{self.category.name} - {self.amount} per {self.period}"
+    
     
         
