@@ -14,7 +14,7 @@ def get_account_balance(account):
 
 
 def get_total_balance_for_user(user):
-    
+
     total_opening = Account.objects.filter(user=user).aggregate(total=Sum("opening_balance"))["total"] or 0
     income = Transaction.objects.filter(user=user, transaction_type="income").aggregate(total=Sum("amount"))["total"] or 0
     expense = Transaction.objects.filter(user=user, transaction_type="expense").aggregate(total=Sum("amount"))["total"] or 0
@@ -29,7 +29,7 @@ def get_monthly_spend_by_category(user, date=None):
     
     start_of_month = date.replace(day=1, hour=0, minute=0, second=0)
 
-    return (Transaction.objects.filter(user=user, transaction_type="expense", occured_at__gte=start_of_month).values("category__name").annotate(total=Sum("amount")).order_by("-total"))
+    return (Transaction.objects.filter(user=user, transaction_type="expense", occurred_at__gte=start_of_month).values("category__name").annotate(total=Sum("amount")).order_by("-total"))
 
 
 def get_monthly_budget_report(user, date=None):
@@ -41,7 +41,7 @@ def get_monthly_budget_report(user, date=None):
 
     report = []
     for budget in budgets:
-        spent = (Transaction.objects.filter(user=user, category=budget.category, transaction_type="expense", occured_at__gte=start_of_month).aggregate(total=Sum("amount"))["total"] or 0)
+        spent = (Transaction.objects.filter(user=user, category=budget.category, transaction_type="expense", occurred_at__gte=start_of_month).aggregate(total=Sum("amount"))["total"] or 0)
         report.append({
             "category": budget.category.name,
             "budget": budget.amount,

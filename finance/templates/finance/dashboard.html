@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Moneylog Dashboard</title>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+
+    <h2>Total Balance</h2>
+    <p>{{ total_balance }}</p>
+
+    <h2>Accounts</h2>
+    <ul>
+      {% for acc in accounts %}
+      <li>{{ acc.name }} — {{ acc.balance }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Monthly Spend by Category</h2>
+    <ul>
+      {% for item in monthly_spend %}
+      <li>{{ item.category__name }} — {{ item.total }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Budget vs Actual</h2>
+    <ul>
+      {% for item in budget_report %}
+      <li>
+        {{ item.category }} | Budget: {{ item.budget }} | Spent: {{ item.spent}} | Remaining: {{ item.remaining }}
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

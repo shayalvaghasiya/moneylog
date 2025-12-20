@@ -15,10 +15,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ("transaction_type", "amount", "category", "account", "user", "occured_at",)
+    list_display = ("transaction_type", "amount", "category", "account", "user", "occurred_at",)
     list_filter = ("transaction_type", "category", "account", )
     search_fields = ("note", )
-    date_hierarchy = "occured_at"
+    date_hierarchy = "occurred_at"
 
 @admin.register(Budget)
 class BudgetAdmin(admin.ModelAdmin):
