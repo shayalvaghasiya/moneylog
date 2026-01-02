@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Moneylog Dashboard</title>
-  </head>
-  <body>
-    <h1>Dashboard</h1>
+{% extends "finance/base.html" %}
+
+{% block content %}
+
+    <h1>Welcome, {{user.username}}</h1>
 
     <h2>Total Balance</h2>
     <p>{{ total_balance }}</p>
@@ -35,5 +33,5 @@
       </li>
       {% endfor %}
     </ul>
-  </body>
-</html>
+    
+{% endblock %}

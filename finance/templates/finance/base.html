@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moneylog</title>
+</head>
+<body>
+
+<h1>Moneylog</h1>
+
+<nav>
+    <a href="{% url 'dashboard' %}">Dashboard</a> |
+    <a href="{% url 'add_transaction' %}">Add Transaction</a>
+</nav>
+
+<hr>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
