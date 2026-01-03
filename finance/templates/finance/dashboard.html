@@ -34,4 +34,22 @@
       {% endfor %}
     </ul>
     
+
+    <h2>Transactions</h2>
+    <ul>
+      {% for tx in transactions %}
+      <li>
+        {{ tx.occurred_at|date:"Y-m-d"}} |
+        {{ tx.category.name}} |
+        {{ tx.amount}} |
+        {{ tx.transaction_type }}
+
+        <a href="{% url 'edit_transaction' tx.id %}">Edit</a>
+      </li>
+    {% empty %}
+      <li>No transactions</li>
+    {% endfor %}
+    </ul>
+    
+
 {% endblock %}

@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Account
+from .models import Account, Transaction
 from .forms import TransactionForm
 
 from .services import (
@@ -22,11 +22,14 @@ def dashboard(request):
             "balance": get_account_balance(account)
         })
     
+    transactions = Transaction.objects.filter(user=request.user).order_by("-occurred_at")
+    
     context = {
         "total_balance": get_total_balance_for_user(user),
         "accounts": account_balances,
         "monthly_spend": get_monthly_spend_by_category(user),
         "budget_report": get_monthly_budget_report(user),
+        "transactions": transactions,
     }
 
     return render(request, "finance/dashboard.html", context)
@@ -47,4 +50,18 @@ def add_transaction(request):
     return render(request, "finance/add_transaction.html", {"form": form})
            
 
-           
+@login_required
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(
+        Transaction, pk=pk, user=request.user
+    )
+
+    if request.method == "POST":
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            return redirect("dashboard")
+    else:
+        form = TransactionForm(instance=transaction)
+    
+    return render(request, "finance/edit_transaction.html", {"form": form})
