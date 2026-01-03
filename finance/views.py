@@ -65,3 +65,16 @@ def edit_transaction(request, pk):
         form = TransactionForm(instance=transaction)
     
     return render(request, "finance/edit_transaction.html", {"form": form})
+
+
+@login_required
+def delete_transaction(request, pk):
+    transaction = get_object_or_404(
+        Transaction, pk=pk, user=request.user
+    )
+    
+    if request.method == "POST":
+        transaction.delete()
+        return redirect("dashboard")
+    
+    return render(request, "finance/delete_transaction.html", {"transaction": transaction})

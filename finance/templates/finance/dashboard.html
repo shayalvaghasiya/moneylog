@@ -45,6 +45,9 @@
         {{ tx.transaction_type }}
 
         <a href="{% url 'edit_transaction' tx.id %}">Edit</a>
+
+        <a href="{% url 'delete_transaction' tx.id %}">Delete</a>
+
       </li>
     {% empty %}
       <li>No transactions</li>
