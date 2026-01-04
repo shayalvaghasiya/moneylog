@@ -1,58 +1,64 @@
-{% extends "finance/base.html" %}
+{% extends "finance/base.html" %} {% block content %}
 
-{% block content %}
+<h1>Welcome, {{user.username}}</h1>
 
-    <h1>Welcome, {{user.username}}</h1>
+<h2>Total Balance</h2>
+<p>{{ total_balance }}</p>
 
-    <h2>Total Balance</h2>
-    <p>{{ total_balance }}</p>
+<p>
+  <a href="{% url 'add_transaction' %}">Add Transaction</a>
+</p>
 
-    <p>
-      <a href="{% url 'add_transaction' %}">Add Transaction</a> 
-    </p>
+<h2>Accounts</h2>
+<ul>
+  {% for acc in accounts %}
+  <li>{{ acc.name }} — {{ acc.balance }}</li>
+  {% endfor %}
+</ul>
 
-    <h2>Accounts</h2>
-    <ul>
-      {% for acc in accounts %}
-      <li>{{ acc.name }} — {{ acc.balance }}</li>
-      {% endfor %}
-    </ul>
+<h2>Monthly Spend by Category</h2>
+<ul>
+  {% for item in monthly_spend %}
+  <li>{{ item.category__name }} — {{ item.total }}</li>
+  {% endfor %}
+</ul>
 
-    <h2>Monthly Spend by Category</h2>
-    <ul>
-      {% for item in monthly_spend %}
-      <li>{{ item.category__name }} — {{ item.total }}</li>
-      {% endfor %}
-    </ul>
+<h2>Budget vs Actual</h2>
+<ul>
+  {% for item in budget_report %}
+  <li>
+    {{ item.category }} | Budget: {{ item.budget }} | Spent: {{ item.spent}} |
+    Remaining: {{ item.remaining }}
+  </li>
+  {% endfor %}
+</ul>
 
-    <h2>Budget vs Actual</h2>
-    <ul>
-      {% for item in budget_report %}
-      <li>
-        {{ item.category }} | Budget: {{ item.budget }} | Spent: {{ item.spent}} | Remaining: {{ item.remaining }}
-      </li>
-      {% endfor %}
-    </ul>
-    
+<h2>Transactions</h2>
+<ul>
+  {% for tx in transactions %}
+  <li>
+    {{ tx.occurred_at|date:"Y-m-d"}} | {{ tx.category.name}} | {{ tx.amount}} |
+    {{ tx.transaction_type }}
 
-    <h2>Transactions</h2>
-    <ul>
-      {% for tx in transactions %}
-      <li>
-        {{ tx.occurred_at|date:"Y-m-d"}} |
-        {{ tx.category.name}} |
-        {{ tx.amount}} |
-        {{ tx.transaction_type }}
+    <a href="{% url 'edit_transaction' tx.id %}">Edit</a>
 
-        <a href="{% url 'edit_transaction' tx.id %}">Edit</a>
+    <a href="{% url 'delete_transaction' tx.id %}">Delete</a>
+  </li>
+  {% empty %}
+  <li>No transactions</li>
+  {% endfor %}
+</ul>
 
-        <a href="{% url 'delete_transaction' tx.id %}">Delete</a>
+<div>
+    {% if transactions.has_previous %}
+        <a href="?page={{ transactions.previous_page_number }}">Previous</a>
+    {% endif %}
 
-      </li>
-    {% empty %}
-      <li>No transactions</li>
-    {% endfor %}
-    </ul>
-    
+    Page {{ transactions.number }} of {{ transactions.paginator.num_pages }}
+
+    {% if transactions.has_next %}
+        <a href="?page={{ transactions.next_page_number }}">Next</a>
+    {% endif %}
+</div>
 
 {% endblock %}

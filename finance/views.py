@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Account, Transaction
 from .forms import TransactionForm
+from django.core.paginator import Paginator
 
 from .services import (
     get_account_balance, 
@@ -22,8 +23,12 @@ def dashboard(request):
             "balance": get_account_balance(account)
         })
     
-    transactions = Transaction.objects.filter(user=request.user).order_by("-occurred_at")
-    
+    transactions_qs = Transaction.objects.filter(user=user).select_related("category", "account").order_by("-occurred_at")
+    paginator = Paginator(transactions_qs, 10)
+    page_number = request.GET.get("page")
+    transactions = paginator.get_page(page_number)
+
+
     context = {
         "total_balance": get_total_balance_for_user(user),
         "accounts": account_balances,
