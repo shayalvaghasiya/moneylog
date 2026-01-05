@@ -1,6 +1,6 @@
 from django.db.models import Sum 
 from django.utils import timezone
-
+from datetime import datetime, time
 from .models import Account, Transaction, Budget
 
 # services for views (some common logics, tasks)
@@ -68,10 +68,12 @@ def get_filtered_transactions(user, params):
     # date filter for transactions
     date_from = params.get("from")
     if date_from:
-        transactions_qs = transactions_qs.filter(occurred_at__gte=date_from)
+        start = timezone.make_aware(datetime.combine(datetime.fromisoformat(date_from), time.min))
+        transactions_qs = transactions_qs.filter(occurred_at__gte=start)
     
     date_to = params.get("to")
     if date_to:
-        transactions_qs = transactions_qs.filter(occurred_at__lte=date_to)
+        end = timezone.make_aware(datetime.combine(datetime.fromisoformat(date_to), time.max))
+        transactions_qs = transactions_qs.filter(occurred_at__lte=end)
 
     return transactions_qs

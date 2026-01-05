@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Account, Transaction, Category
 from .forms import TransactionForm
 from django.core.paginator import Paginator
-from datetime import datetime
 
 from .services import (
     get_account_balance, 
