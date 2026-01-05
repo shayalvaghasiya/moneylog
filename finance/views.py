@@ -91,12 +91,22 @@ def delete_transaction(request, pk):
     return render(request, "finance/delete_transaction.html", {"transaction": transaction})
 
 
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 def trasaction_list_api(request):
     user = request.user
 
-    transactions = get_filtered_transactions(user, request.GET)
-    serializer = TransactionSerializer(transactions, many=True)
+    if request.method == "GET":
+        transactions = get_filtered_transactions(user, request.GET)
+        serializer = TransactionSerializer(transactions, many=True)
 
-    return Response(serializer.data)
+        return Response(serializer.data)
 
+    if request.method == "POST":
+        serializer = TransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            transaction = serializer.save(user=user)
+            return Response(TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    

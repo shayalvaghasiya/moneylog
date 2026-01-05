@@ -8,6 +8,7 @@ urlpatterns = [
     path("edit/<int:pk>/", edit_transaction, name="edit_transaction"),
     path("delete/<int:pk>/", delete_transaction, name="delete_transaction"),
     path("api/transactions/", trasaction_list_api),
+    path("api/transactions/", trasaction_list_api),
     
 ]
 
