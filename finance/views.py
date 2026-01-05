@@ -3,6 +3,11 @@ from django.contrib.auth.decorators import login_required
 from .models import Account, Transaction, Category
 from .forms import TransactionForm
 from django.core.paginator import Paginator
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import TransactionSerializer
+
 
 from .services import (
     get_account_balance, 
@@ -84,3 +89,14 @@ def delete_transaction(request, pk):
         return redirect("dashboard")
     
     return render(request, "finance/delete_transaction.html", {"transaction": transaction})
+
+
+@api_view(["GET"])
+def trasaction_list_api(request):
+    user = request.user
+
+    transactions = get_filtered_transactions(user, request.GET)
+    serializer = TransactionSerializer(transactions, many=True)
+
+    return Response(serializer.data)
+
