@@ -33,7 +33,43 @@
   {% endfor %}
 </ul>
 
+
 <h2>Transactions</h2>
+
+
+<h3>Filters</h3>
+
+<form method="get">
+    <label>
+        Category:
+        <select name="category">
+            <option value="">All</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                    {% if request.GET.category == cat.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label>
+        From:
+        <input type="date" name="from" value="{{ request.GET.from }}">
+    </label>
+
+    <label>
+        To:
+        <input type="date" name="to" value="{{ request.GET.to }}">
+    </label>
+
+    <button type="submit">Apply</button>
+</form>
+
+
 <ul>
   {% for tx in transactions %}
   <li>

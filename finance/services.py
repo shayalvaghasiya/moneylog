@@ -53,3 +53,25 @@ def get_monthly_budget_report(user, date=None):
 
 
     
+def get_filtered_transactions(user, params):
+    transactions_qs = (
+        Transaction.objects.filter(user=user)
+        .select_related("category", "account")
+        .order_by("-occurred_at")
+        )
+    
+    # category filter for transactions
+    category_id = params.get("category")
+    if category_id:
+        transactions_qs = transactions_qs.filter(category_id=category_id)
+
+    # date filter for transactions
+    date_from = params.get("from")
+    if date_from:
+        transactions_qs = transactions_qs.filter(occurred_at__gte=date_from)
+    
+    date_to = params.get("to")
+    if date_to:
+        transactions_qs = transactions_qs.filter(occurred_at__lte=date_to)
+
+    return transactions_qs

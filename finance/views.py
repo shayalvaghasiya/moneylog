@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Account, Transaction
+from .models import Account, Transaction, Category
 from .forms import TransactionForm
 from django.core.paginator import Paginator
+from datetime import datetime
 
 from .services import (
     get_account_balance, 
     get_total_balance_for_user, 
     get_monthly_spend_by_category, 
     get_monthly_budget_report,
+    get_filtered_transactions,
 )
 
 @login_required
@@ -23,11 +25,10 @@ def dashboard(request):
             "balance": get_account_balance(account)
         })
     
-    transactions_qs = Transaction.objects.filter(user=user).select_related("category", "account").order_by("-occurred_at")
+    transactions_qs = get_filtered_transactions(user, request.GET)
     paginator = Paginator(transactions_qs, 10)
     page_number = request.GET.get("page")
     transactions = paginator.get_page(page_number)
-
 
     context = {
         "total_balance": get_total_balance_for_user(user),
@@ -35,6 +36,7 @@ def dashboard(request):
         "monthly_spend": get_monthly_spend_by_category(user),
         "budget_report": get_monthly_budget_report(user),
         "transactions": transactions,
+        "categories": Category.objects.filter(user=user, category_type="expense"),
     }
 
     return render(request, "finance/dashboard.html", context)
