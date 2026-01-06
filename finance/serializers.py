@@ -2,8 +2,8 @@ from rest_framework import serializers
 from .models import Transaction
 
 class TransactionSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source="category.name", read_only=True)
-    account = serializers.CharField(source="account.name", read_only=True)
+    category_name = serializers.SerializerMethodField()
+    account_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Transaction
@@ -18,3 +18,9 @@ class TransactionSerializer(serializers.ModelSerializer):
             "occurred_at",
             "note",
         ]
+    
+    def get_category_name(self, obj):
+        return obj.category.name
+    
+    def get_account_name(self, obj):
+        return obj.account.name
