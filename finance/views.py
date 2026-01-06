@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import TransactionSerializer
+from rest_framework.pagination import PageNumberPagination
 
 
 from .services import (
@@ -97,9 +98,11 @@ def trasaction_list_api(request):
 
     if request.method == "GET":
         transactions = get_filtered_transactions(user, request.GET)
+        paginator = PageNumberPagination()
+        page = paginator.paginate_queryset(transactions, request)
         serializer = TransactionSerializer(transactions, many=True)
 
-        return Response(serializer.data)
+        return paginator.get_paginated_response(serializer.data)
 
     if request.method == "POST":
         serializer = TransactionSerializer(data=request.data)
@@ -109,4 +112,3 @@ def trasaction_list_api(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    
