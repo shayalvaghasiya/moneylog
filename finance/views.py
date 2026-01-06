@@ -1,13 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
 from .models import Account, Transaction, Category
 from .forms import TransactionForm
-from django.core.paginator import Paginator
-from rest_framework.decorators import api_view
+from .serializers import TransactionSerializer
+
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TransactionSerializer
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwner
 from rest_framework.pagination import PageNumberPagination
+
 
 
 from .services import (
@@ -112,3 +117,27 @@ def trasaction_list_api(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+@api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated, IsOwner])
+def transaction_detail_api(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+
+    # Object-level permission check happens here
+    if request.method == "GET":
+        serializer = TransactionSerializer(transaction)
+        return Response(serializer.data)
+
+    if request.method == "PUT":
+        serializer = TransactionSerializer(
+            transaction,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    if request.method == "DELETE":
+        transaction.delete()
+        return Response(status=204)
