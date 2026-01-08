@@ -1,11 +1,18 @@
-<script>
-	import favicon from '$lib/assets/favicon.svg';
+<!-- base UI (shared accross all pages) -->
 
-	let { children } = $props();
+<script>
+	import {auth} from "$lib/authStore";
+	import {derived} from "svelte/store";
+	import LogoutButton  from "$lib/LogoutButton.svelte";
+
+	const isLoggedIn = derived(auth, ($auth) => !!$auth.token);
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
+<nav>
+	<a href="/">Home</a>
 
-{@render children()}
+	{#if $isLoggedIn}
+		<LogoutButton />
+	{/if}
+</nav>
+<slot />

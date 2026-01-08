@@ -1,13 +1,13 @@
 <script>
-  import { clearToken } from "$lib/auth";
-  import { goto } from "$app/navigation";
+  import { logout } from "$lib/authStore";
+  import { goto, replaceState } from "$app/navigation";
 
-  function logout() {
-    clearToken();
-    goto("/login");
+  function handle_logout() {
+    logout();
+    goto("/login", {replaceState: true});
   }
 </script>
 
-<button on:click={logout}>
+<button on:click={handle_logout}>
   Logout
 </button>

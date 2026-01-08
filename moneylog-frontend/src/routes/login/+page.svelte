@@ -1,12 +1,17 @@
+<!-- login page -->
+
 <script>
   import { goto } from "$app/navigation";
-  import { setToken } from "$lib/auth";
+  import {login} from "$lib/authStore"
 
   let username = "";
   let password = "";
   let error = "";
+  let isLoading = false;
 
-  async function login() {
+  async function handle_login() {
+    if (isLoading) return;
+    isLoading = true;
     error = "";
 
     const res = await fetch("http://localhost:8000/api/token/", {
@@ -17,33 +22,29 @@
 
     if (!res.ok) {
       error = "Invalid username or password";
+      isLoading = false;
       return;
     }
 
     const data = await res.json();
-    setToken(data.access);
-    goto("/");
+    login(data.access);
+    await Promise.resolve();
+    goto("/", {replaceState: true});
   }
 </script>
 
 <h1>Login</h1>
 
-<form on:submit|preventDefault={login}>
-  <div>
-    <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label>Username</label>
-    <input bind:value={username} />
-  </div>
-
-  <div>
-    <!-- svelte-ignore a11y_label_has_associated_control -->
-    <label>Password</label>
-    <input type="password" bind:value={password} />
-  </div>
-
-  <button type="submit">Login</button>
-
-  {#if error}
-    <p style="color: red;">{error}</p>
-  {/if}
+<form on:submit|preventDefault={handle_login}>
+  <label>
+    Username <input placeholder="Username" bind:value={username} disabled={isLoading} />
+  </label>
+  <label>
+    Password <input type="password" placeholder="Password" bind:value={password} disabled={isLoading} />
+  </label>
+  <button disabled={isLoading}>{isLoading ? 'Logging in...' : 'Login'}</button>
 </form>
+
+{#if error}
+  <p style="color:red">{error}</p>
+{/if}
