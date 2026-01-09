@@ -8,6 +8,7 @@
 	let password = '';
 	let error = '';
 	let isLoading = false;
+	BASE_URL = 'http://localhost:8000';
 
 	async function handle_login() {
 		if (isLoading) return;
@@ -15,7 +16,7 @@
 		error = '';
 
 		try {
-			const res = await fetch('http://localhost:8000/api/token/', {
+			const res = await fetch(`${BASE_URL}/api/token/`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, password })

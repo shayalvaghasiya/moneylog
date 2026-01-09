@@ -5,51 +5,43 @@
 	import { auth } from '$lib/authStore';
 	import { goto } from '$app/navigation';
 	import { get } from 'svelte/store';
+	import { getDashboard } from '$lib/api';
 
-	let transactions = [];
+	const BASE_URL = 'http://localhost:8000';
 	let loading = true;
-	let error = null;
+	let dashboard;
 
-	async function fetchTransactions(token) {
-		try {
-			const res = await fetch('http://localhost:8000/api/transactions/', {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			});
-
-			if (!res.ok) throw new Error('Failed to fetch data');
-			const data = await res.json();
-			transactions = data.results;
-		} catch (e) {
-			error = e.message;
-		} finally {
-			loading = false;
-		}
-	}
-
-	onMount(() => {
+	onMount(async () => {
 		const { token } = get(auth);
 
 		if (!token) {
-			goto('/login', { replaceState: true });
+			goto('/login');
 			return;
 		}
 
-		fetchTransactions(token);
+		dashboard = await getDashboard();
+		loading = false;
 	});
 </script>
 
 <h1>MoneyLog</h1>
 
 {#if loading}
-	<p>Loading...</p>
-{:else if error}
-	<p style="color: red">Error: {error}</p>
+	<p>Loading dashboard…</p>
 {:else}
+	<h2>Total Balance: ₹{dashboard.total_balance}</h2>
+
+	<h3>Accounts</h3>
 	<ul>
-		{#each transactions as tx}
-			<li>{tx.category_name} — ₹{tx.amount}</li>
+		{#each dashboard.accounts as acc}
+			<li>{acc.name}: ₹{acc.balance}</li>
+		{/each}
+	</ul>
+
+	<h3>Monthly Spend</h3>
+	<ul>
+		{#each dashboard.monthly_spend as item}
+			<li>{item.category}: ₹{item.total}</li>
 		{/each}
 	</ul>
 {/if}
