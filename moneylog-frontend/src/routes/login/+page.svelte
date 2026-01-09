@@ -39,7 +39,7 @@
 	}
 </script>
 
-<h1>Login</h1>
+<h1><center>Login</center></h1>
 
 <form on:submit|preventDefault={handle_login}>
 	<label>

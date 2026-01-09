@@ -8,11 +8,11 @@
 	const isLoggedIn = derived(auth, ($auth) => !!$auth?.token);
 </script>
 
+{#if $isLoggedIn}
 <nav>
 	<a href="/">Home</a>
 	<a href="/transactions">Transactions</a>
-	{#if $isLoggedIn}
-		<LogoutButton />
-	{/if}
+	<LogoutButton />
 </nav>
+{/if}
 <slot />

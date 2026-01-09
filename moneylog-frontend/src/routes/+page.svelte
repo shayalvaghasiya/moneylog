@@ -2,7 +2,7 @@
 
 <script>
 	import { onMount } from 'svelte';
-	import { auth } from '$lib/authStore';
+	import { auth, logout } from '$lib/authStore';
 	import { goto } from '$app/navigation';
 	import { get } from 'svelte/store';
 	import { getDashboard } from '$lib/api';
@@ -24,6 +24,11 @@
 			dashboard = await getDashboard();
 		} catch (e) {
 			console.error(e);
+			if (e.status === 401) {
+				logout();
+				goto('/login');
+				return;
+			}
 			error = 'Failed to load dashboard data.';
 		} finally {
 			loading = false;
