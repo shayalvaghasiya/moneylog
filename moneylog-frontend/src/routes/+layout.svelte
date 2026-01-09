@@ -3,6 +3,7 @@
 <script>
 	import {auth} from "$lib/authStore";
 	import {derived} from "svelte/store";
+	import "../app.css";
 	import LogoutButton  from "$lib/LogoutButton.svelte";
 
 	const isLoggedIn = derived(auth, ($auth) => !!$auth?.token);

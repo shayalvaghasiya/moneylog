@@ -39,23 +39,14 @@
 	}
 </script>
 
-<h1><center>Login</center></h1>
-
-<form on:submit|preventDefault={handle_login}>
-	<label>
-		Username <input placeholder="Username" bind:value={username} disabled={isLoading} />
-	</label>
-	<label>
-		Password <input
-			type="password"
-			placeholder="Password"
-			bind:value={password}
-			disabled={isLoading}
-		/>
-	</label>
-	<button disabled={isLoading}>{isLoading ? 'Logging in...' : 'Login'}</button>
+<form class="max-w-sm mx-auto" on:submit|preventDefault={handle_login}>
+  <div class="mb-5">
+    <label for="username" class="block mb-2.5 text-sm font-medium text-heading">Your Username</label>
+    <input type="username" id="username" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" bind:value={username} required disabled={isLoading}/>
+  </div>
+  <div class="mb-5">
+    <label for="password" class="block mb-2.5 text-sm font-medium text-heading">Your password</label>
+    <input type="password" id="password" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" bind:value={password} required disabled={isLoading} placeholder="••••••••"/>
+  </div>
+  <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Submit</button>
 </form>
-
-{#if error}
-	<p style="color:red">{error}</p>
-{/if}
