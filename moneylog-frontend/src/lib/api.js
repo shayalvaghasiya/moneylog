@@ -26,6 +26,7 @@ export function getDashboard() {
   return request("/api/dashboard/");
 }
 
-export function getTransactions(params = "") {
-  return request(`/api/transactions/${params}`);
+export function getTransactions(page = 1) {
+  return request(`/api/transactions/?page=${page}`);
 }
+

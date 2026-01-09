@@ -17,7 +17,8 @@ from .services import (
     get_filtered_transactions,
 )
 
-@api_view
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def dashboard_api(request):
     user = request.user
 

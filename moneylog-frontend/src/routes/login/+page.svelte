@@ -8,7 +8,7 @@
 	let password = '';
 	let error = '';
 	let isLoading = false;
-	BASE_URL = 'http://localhost:8000';
+	const BASE_URL = 'http://localhost:8000';
 
 	async function handle_login() {
 		if (isLoading) return;

@@ -9,6 +9,7 @@
 
 	const BASE_URL = 'http://localhost:8000';
 	let loading = true;
+	let error = null;
 	let dashboard;
 
 	onMount(async () => {
@@ -19,8 +20,14 @@
 			return;
 		}
 
-		dashboard = await getDashboard();
-		loading = false;
+		try {
+			dashboard = await getDashboard();
+		} catch (e) {
+			console.error(e);
+			error = 'Failed to load dashboard data.';
+		} finally {
+			loading = false;
+		}
 	});
 </script>
 
@@ -28,6 +35,8 @@
 
 {#if loading}
 	<p>Loading dashboard…</p>
+{:else if error}
+	<p style="color: red">{error}</p>
 {:else}
 	<h2>Total Balance: ₹{dashboard.total_balance}</h2>
 
