@@ -81,7 +81,7 @@
 </script>
 
 <div
-	class="flex min-h-screen flex-col items-center justify-center bg-black bg-cover bg-center bg-no-repeat px-6 py-8 mx-auto lg:py-0"
+	class="flex min-h-screen flex-col items-center justify-center bg-black bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed px-6 py-8 mx-auto lg:py-0"
 	style="background-image: url('/images/bg.png');"
 >
 	<div
