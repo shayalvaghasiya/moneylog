@@ -60,7 +60,7 @@ def dashboard_api(request):
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
-def trasaction_list_api(request):
+def transaction_list_api(request):
     user = request.user
 
     if request.method == "GET":
